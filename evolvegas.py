@@ -92,22 +92,26 @@ def hard_spheres(particles, radius, Lbox):
 ## long range interaction
 # force
 def Force(x):
-    return 1/x**2
+    return 100/x**2
+
+def direction(x1,x2):
+    return array(x2 - x1)/sum((x1 - x2)**2)
 
 # evolution
 def long_interaction(particles, radius, Lbox):
     for i in range(0, len(particles)): # implementare hard_spheres1, tipo box1, includendo tutto il for j
+        [particles[i][4], particles[i][5]] = [0,0]
+        
         for j in range(i + 1, len(particles)):
             x1 = array([particles[i][0], particles[i][1]])
             x2 = array([particles[j][0], particles[j][1]])
             dist = sqrt(sum((x1-x2)**2))
 
             F = Force(dist)
-            [particles[i][4], particles[i][5]] += direction(x1,x2)*F
-            [particles[j][4], particles[j][5]] += direction(x2,x1)*F
+            [particles[i][4], particles[i][5]] = array([particles[i][4], particles[i][5]]) + direction(x1,x2)*F
+            [particles[j][4], particles[j][5]] = array([particles[j][4], particles[j][5]]) + direction(x2,x1)*F
         
         particles[i] = box1(particles[i], Lbox)
-        [particles[i][2], particles[i][3]] += [particles[i][4], particles[i][5]]
-        [particles[i][4], particles[i][5]] = [0,0]
+        [particles[i][2], particles[i][3]] = array([particles[i][2], particles[i][3]]) + array([particles[i][4], particles[i][5]])
         
     return particles

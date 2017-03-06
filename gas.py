@@ -3,17 +3,18 @@ import random as rnd
 from pylab import *
 from plottigas import *
 from evolvegas import *
+from generategas import *
 
 ## set path
 # to execute in future other manifactured modules (more fun!)
 sys.path = sys.path + ["C:\\Users\\candi\\Documents\\Ale\\Python"]
 
-
 ## global variables
 
 #initial values
 grid_len = 100
-density = 3
+N_max = 1000
+density = array([0.1])
 # density = sys.argv[0]
 Lbox = 1000
 
@@ -22,21 +23,13 @@ sphere_radius = 20 # radius in hard-spheres model
 
 ## initial setting
 particles = []
-xpart = []
-ypart = []
+xpart = [[], []]
 
-# explores each position of a grid and randomly decides whether there is or not a particle there
-for i in range(0,grid_len):
-    for j in range(0,grid_len):
-        if rnd.random()*100 < density:
-            newparticle = array([i-50, j-50, rnd.random()*50 - 25, rnd.random()*50 - 25, 0, 0])
-            # la struttuta di salvataggio di ogni particella va spacchettata in array bidimensionali (posizione, velocità, accelerazione): sono troppo più comodi!
-            # bisogna aggiungere il campo specie della particella (e forse un campo separatoper descrivere il numero di particelle accorpate)
-            xpart += [i]
-            ypart += [j]
-            particles += [newparticle]
-        #elif rnd.random()*100 < (density1 + density2):
-            
+if sum(density) > 100:
+    # normalizes probability of generating a particle to 1 if it exceeds
+    density = density*100/sum(density)
+
+particles, xpart = grid_generation(particles, xpart, grid_len, density)
     
 ## time evolution
 t=0
@@ -49,7 +42,7 @@ onepy = [particles[0][1]]
 
 # step by step evolution cycle
 while t<100:
-    particles = hard_spheres(particles, sphere_radius, Lbox)
+    particles = long_interaction(particles, sphere_radius, Lbox)
     onepx += [particles[0][0]]
     onepy += [particles[0][1]]
     t += 1
