@@ -30,6 +30,8 @@ for i in range(0,grid_len):
     for j in range(0,grid_len):
         if rnd.random()*100 < density:
             newparticle = array([i-50, j-50, rnd.random()*50 - 25, rnd.random()*50 - 25, 0, 0])
+            # la struttuta di salvataggio di ogni particella va spacchettata in array bidimensionali (posizione, velocità, accelerazione): sono troppo più comodi!
+            # bisogna aggiungere il campo specie della particella (e forse un campo separatoper descrivere il numero di particelle accorpate)
             xpart += [i]
             ypart += [j]
             particles += [newparticle]
