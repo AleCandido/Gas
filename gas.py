@@ -29,7 +29,7 @@ ypart = []
 for i in range(0,grid_len):
     for j in range(0,grid_len):
         if rnd.random()*100 < density:
-            newparticle = array([i-50, j-50, rnd.random()*50 - 25, rnd.random()*50 - 25 ])
+            newparticle = array([i-50, j-50, rnd.random()*50 - 25, rnd.random()*50 - 25, 0, 0])
             xpart += [i]
             ypart += [j]
             particles += [newparticle]
