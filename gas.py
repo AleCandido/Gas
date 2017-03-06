@@ -33,6 +33,7 @@ for i in range(0,grid_len):
             xpart += [i]
             ypart += [j]
             particles += [newparticle]
+        #elif rnd.random()*100 < (density1 + density2):
             
     
 ## time evolution
