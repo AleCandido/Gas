@@ -65,7 +65,7 @@ def edist(a,b):
     
 # evolutions
 def hard_spheres(particles, radius, Lbox):
-    for i in range(0, len(particles)):
+    for i in range(0, len(particles)): # implementare hard_spheres1, tipo box1, includendo tutto il for j
         for j in range(i + 1, len(particles)):
             x1 = array([particles[i][0], particles[i][1]])
             x2 = array([particles[j][0], particles[j][1]])
