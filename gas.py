@@ -23,13 +23,12 @@ sphere_radius = 20 # radius in hard-spheres model
 
 ## initial setting
 particles = []
-xpart = [[], []]
 
 if sum(density) > 100:
     # normalizes probability of generating a particle to 1 if it exceeds
     density = density*100/sum(density)
 
-particles, xpart = grid_generation(particles, xpart, grid_len, density)
+particles = grid_generation(particles, grid_len, density)
     
 ## time evolution
 t=0
@@ -37,14 +36,14 @@ t=0
 plotparticles(particles, t)
 
 # follow one particle evolution can be more interesting than look at the beginning and ending instant
-onepx = [particles[0][0]]
-onepy = [particles[0][1]]
+onepx = [particles[0][0][0]]
+onepy = [particles[0][0][1]]
 
 # step by step evolution cycle
 while t<100:
-    particles = long_interaction(particles, sphere_radius, Lbox)
-    onepx += [particles[0][0]]
-    onepy += [particles[0][1]]
+    particles = box_constraint(particles, Lbox)#sphere_radius, Lbox)
+    onepx += [particles[0][0][0]]
+    onepy += [particles[0][0][1]]
     t += 1
 
 ## end plots    

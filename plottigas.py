@@ -14,8 +14,8 @@ def plotparticles(particles,t):
     ypart = zeros(len(particles))
     
     for i in range(0,len(particles)):
-        xpart[i] = particles[i][0]
-        ypart[i] = particles[i][1]
+        xpart[i] = particles[i][0][0]
+        ypart[i] = particles[i][0][1]
     
     figure(t)
     xlim(min(xpart)*1.1,max(xpart)*1.1)

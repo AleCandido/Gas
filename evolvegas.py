@@ -25,8 +25,8 @@ Implemented:
 # is a 2D model, but it's immediately extensible to N dimensions
 
 def free_expansion(particles):
-    particles[i][0] = particles[i][0] + particles[i][2]
-    particles[i][1] = particles[i][1] + particles[i][3]
+    for i in range(0,len(particles)):
+        particles[i][0] = particles[i][0] + particles[i][1]
     
     return particles
 
@@ -34,29 +34,30 @@ def free_expansion(particles):
 # a bit funnier
 # is a 2D model, but it's immediately extensible to N dimensions
 
-def box(particles, Lbox):
+def box_constraint(particles, Lbox):
     for i in range(0,len(particles)):
-        particles[i] = box1(particles[i], Lboox)
+        particles[i] = box1(particles[i], Lbox)
         
     return particles
     
 def box1(particle, Lbox):
-        futureposx = particle[0] + particle[2]
-        futureposy = particle[1] + particle[3]
-        if (futureposx > Lbox)|(futureposx < -Lbox):
-            particle[2] = -particle[2]
-            particle[0] = particle[0] + particle[2]
+        futurepos = particle[0] + particle[1]
+        if (futurepos[0] > Lbox)|(futurepos[0] < -Lbox):
+            particle[1][0] = -particle[1][0]
+            particle[0][0] = particle[0][0] + particle[1][0]
         else:
-            particle[0] = futureposx
-        if (futureposy > Lbox)|(futureposy < -Lbox):
-            particle[3] = -particle[3]
-            particle[1] = particle[1] + particle[3]
+            particle[0][0] = futurepos[0]
+        if (futurepos[1] > Lbox)|(futurepos[1] < -Lbox):
+            particle[1][1] = -particle[1][1]
+            particle[0][1] = particle[0][1] + particle[1][1]
         else:
-            particle[1] = futureposy
+            particle[0][1] = futurepos[1]
             
         return particle
     
 ## hard spheres collisions 2D
+   # da correggere con le nuove strutture dati
+   
    
 # distances
 def edist(a,b):
