@@ -42,22 +42,16 @@ def box_constraint(particles, Lbox):
     
 def box1(particle, Lbox):
         futurepos = particle[0] + particle[1]
-        if (futurepos[0] > Lbox)|(futurepos[0] < -Lbox):
-            particle[1][0] = -particle[1][0]
-            particle[0][0] = particle[0][0] + particle[1][0]
-        else:
-            particle[0][0] = futurepos[0]
-        if (futurepos[1] > Lbox)|(futurepos[1] < -Lbox):
-            particle[1][1] = -particle[1][1]
-            particle[0][1] = particle[0][1] + particle[1][1]
-        else:
-            particle[0][1] = futurepos[1]
+        for i in range(0, len(particle[0])):
+            if (futurepos[i] > Lbox)|(futurepos[i] < -Lbox):
+                particle[1][i] = -particle[1][i]
+                particle[0][i] += particle[1][i]
+            else:
+                particle[0][i] = futurepos[i]
             
         return particle
     
 ## hard spheres collisions 2D
-   # da correggere con le nuove strutture dati
-   
    
 # distances
 def edist(a,b):
@@ -65,26 +59,32 @@ def edist(a,b):
     return sqrt((a[0] - b[0])**2 + (a[1] - b[1])**2)
     
 # evolutions
-def hard_spheres(particles, radius, Lbox):
+def hard_spheres(particles, Lbox, radius):
+    # c'è da trasformarla in 3D
+    # c'è da risolvere il problema della compenetrazione protratta su più step
     for i in range(0, len(particles)): # implementare hard_spheres1, tipo box1, includendo tutto il for j
         for j in range(i + 1, len(particles)):
-            x1 = array([particles[i][0], particles[i][1]])
-            x2 = array([particles[j][0], particles[j][1]])
-            dist = sqrt(sum((x1-x2)**2))     #this step can be implemented with another distance notion
-            if (dist < 2*radius):
-                p1 = array([particles[i][2], particles[i][3]])
-                p2 = array([particles[j][2], particles[j][3]])
-                par = array([x1[0] - x2[0], x1[1] - x2[1]])/dist
-                ort = array([par[1], -par[0]])
+            x1 = particles[i][0]
+            x2 = particles[j][0]
+            distance = sqrt(sum((x1-x2)**2))     # this step can be implemented with another distance notion
+            if (distance == 0):
+                distance = radius/10**6
                 
-                temp = sqrt(sum((p1*par)**2))*par + sqrt(sum((p2*ort)**2))*ort
-                p2 = sqrt(sum((p2*par)**2))*par + sqrt(sum((p1*ort)**2))*ort
-                p1 = temp
+            if (distance < 2*radius):
+                # print(distance)
+                v1 = particles[i][1]
+                v2 = particles[j][1]
+                par = (x1-x2)/distance              # the direction of the connection between centres
+                ort = array([par[1], -par[0]])      # the direction orthogonal to par
                 
-                particles[i][2] = p1[0]                
-                particles[i][3] = p1[1]
-                particles[j][2] = p2[0]                
-                particles[j][3] = p2[1]
+                # if they hit each other they exchange the component of velocity in the direction of par
+                # nothing happens in the ort direction
+                temp = sqrt(sum((v2*par)**2))*par + sqrt(sum((v1*ort)**2))*ort
+                v2 = sqrt(sum((v1*par)**2))*par + sqrt(sum((v2*ort)**2))*ort
+                v1 = temp
+                
+                particles[i][1] = v1 
+                particles[j][1] = v2
                 
         particles[i] = box1(particles[i], Lbox)
         
@@ -100,15 +100,15 @@ def direction(x1,x2):
 
 # evolution
 def long_interaction(particles, radius, Lbox):
-    for i in range(0, len(particles)): # implementare hard_spheres1, tipo box1, includendo tutto il for j
+    for i in range(0, len(particles)):
         [particles[i][4], particles[i][5]] = [0,0]
         
         for j in range(i + 1, len(particles)):
             x1 = array([particles[i][0], particles[i][1]])
             x2 = array([particles[j][0], particles[j][1]])
-            dist = sqrt(sum((x1-x2)**2))
+            distance = sqrt(sum((x1-x2)**2))
 
-            F = Force(dist)
+            F = Force(distance)
             [particles[i][4], particles[i][5]] = array([particles[i][4], particles[i][5]]) + direction(x1,x2)*F
             [particles[j][4], particles[j][5]] = array([particles[j][4], particles[j][5]]) + direction(x2,x1)*F
         

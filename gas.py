@@ -14,12 +14,12 @@ sys.path = sys.path + ["C:\\Users\\candi\\Documents\\Ale\\Python"]
 #initial values
 grid_len = 100
 N_max = 1000
-density = array([0.1])
+density = array([1.])
 # density = sys.argv[0]
-Lbox = 1000
+Lbox = 200
 
 #interaction values
-sphere_radius = 20 # radius in hard-spheres model
+sphere_radius = 1 # radius in hard-spheres model
 
 ## initial setting
 particles = []
@@ -28,28 +28,35 @@ if sum(density) > 100:
     # normalizes probability of generating a particle to 1 if it exceeds
     density = density*100/sum(density)
 
-particles = grid_generation(particles, grid_len, density)
+particles = random_generation2(particles, grid_len, density, 3)
     
 ## time evolution
 t=0
 # time 0 plot
-plotparticles(particles, t)
+plotparticles3D(particles, t)
 
 # follow one particle evolution can be more interesting than look at the beginning and ending instant
-onepx = [particles[0][0][0]]
-onepy = [particles[0][0][1]]
+onep = []
+
+for i in range(0,len(particles[0][0])):
+    onep += [0]
+    onep[i] = [particles[0][0][i]]
 
 # step by step evolution cycle
 while t<100:
-    particles = box_constraint(particles, Lbox)#sphere_radius, Lbox)
-    onepx += [particles[0][0][0]]
-    onepy += [particles[0][0][1]]
+    particles = box_constraint(particles, Lbox)
+    for i in range(0,len(particles[0][0])):
+        onep[i] += [particles[0][0][i]]
     t += 1
 
 ## end plots    
 # one particle history  
-figure(1)
-plot(onepx,onepy)
+fig = figure(1)
+ax = fig.gca(projection='3d')
+ax.plot(onep[0], onep[1], onep[2], label='0th particle trajectory')
+ax.legend()
+
+# plot(onep[0],onep[1])
 
 # end positions
-plotparticles(particles,t)
+plotparticles3D(particles,t)
